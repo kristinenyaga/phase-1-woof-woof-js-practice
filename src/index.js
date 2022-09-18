@@ -1,6 +1,7 @@
 document.addEventListener("DOMContentLoaded",()=>{
   fetchDog()
-
+  let filter=document.querySelector("#filter-div")
+  filter.querySelector("#good-dog-filter").addEventListener("click",changeFilter)
 })
 
 function fetchDog(){
@@ -84,3 +85,48 @@ let updateDb=(id)=>{
     
   })
 }
+
+let changeFilter=(e)=>{
+
+  let text=e.target.innerText
+  console.log(text)
+  if(text === 'Filter good dogs: OFF'){
+   e.target.innerText="Filter good dogs: On"
+   fetchOnDogs()
+  }
+  else{
+    e.target.innerText="Filter good dogs: OFF"
+    document.querySelector("#dog-info").innerHTML=''
+
+  }
+}
+
+let fetchOnDogs=()=>{
+  fetch("http://localhost:3000/pups")
+  .then(response => response.json())
+  .then(response => { 
+    
+    appendOnDogs(response)})
+}
+
+
+ let appendOnDogs=(dogs)=>{
+ let filteredDogs=dogs.filter(dog => dog.isGoodDog === true)
+ 
+ filteredDogs.map(filteredDog =>{
+  console.log(filteredDog)
+  let dogInfo=document.querySelector("#dog-info")
+  
+  let dog=document.createElement("div")
+  dog.setAttribute("id",`${filteredDog.id}`)
+  dog.innerHTML=`
+  <img src="${filteredDog.image}" />
+  <h2>${filteredDog.name}</h2>
+
+  `
+  dogInfo.append(dog)
+  
+ })
+ 
+
+ }
